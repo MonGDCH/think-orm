@@ -4,15 +4,103 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a5a47fb68043b888b3b87187fa4f0c19",
+    "content-hash": "004a63f5ad5a50703c867379547ddeb9",
     "packages": [
         {
-            "name": "mongdch/mon-util",
-            "version": "1.6.3",
+            "name": "mongdch/mon-cache",
+            "version": "1.1.0",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.6.3/mongdch-mon-util-1.6.3.zip",
-                "reference": "463c4a5b852737d5deb21300ef07222c4f29e765",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-cache/1.1.0/mongdch-mon-cache-1.1.0.zip",
+                "reference": "84dc349ed4b5acf21923e36ccbf03f7a395d4d4e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/simple-cache": "^1.0"
+            },
+            "suggest": {
+                "ext-redis": "For better performance support."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mon\\cache\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mon",
+                    "email": "985558837@qq.com",
+                    "homepage": "http://www.gdmon.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The PSR-16 simple cache utils.",
+            "homepage": "http://gdmon.com/",
+            "keywords": [
+                "cache",
+                "psr-16"
+            ],
+            "support": {
+                "issues": "https://github.com/MonGDCH/mon-cache/issues",
+                "source": "https://github.com/MonGDCH/mon-cache/tree/1.1.0"
+            },
+            "time": "2025-12-13T08:01:25+00:00"
+        },
+        {
+            "name": "mongdch/mon-log",
+            "version": "1.0.6",
+            "dist": {
+                "type": "zip",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-log/1.0.6/mongdch-mon-log-1.0.6.zip",
+                "reference": "8188d3cb8b41730e5510c26b7507bf4666e80930",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "psr/log": ">=1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mon\\log\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mon",
+                    "email": "985558837@qq.com",
+                    "homepage": "http://www.gdmon.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The Logger Utils for PSR-3.",
+            "homepage": "http://gdmon.com/",
+            "keywords": [
+                "log",
+                "logger",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/MonGDCH/mon-log/issues",
+                "source": "https://github.com/MonGDCH/mon-log/tree/1.0.6"
+            },
+            "time": "2025-06-14T09:39:31+00:00"
+        },
+        {
+            "name": "mongdch/mon-util",
+            "version": "1.6.5",
+            "dist": {
+                "type": "zip",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.6.5/mongdch-mon-util-1.6.5.zip",
+                "reference": "397aa96c06bf1c9ff4092855d8dedfcd89e99837",
                 "shasum": ""
             },
             "require": {
@@ -48,9 +136,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/mon-util/issues",
-                "source": "https://github.com/MonGDCH/mon-util/tree/1.6.3"
+                "source": "https://github.com/MonGDCH/mon-util/tree/1.6.5"
             },
-            "time": "2025-11-19T06:46:42+00:00"
+            "time": "2025-12-09T08:41:32+00:00"
         },
         {
             "name": "psr/container",
@@ -145,20 +233,20 @@
         },
         {
             "name": "psr/simple-cache",
-            "version": "3.0.0",
+            "version": "1.0.1",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/psr/simple-cache/3.0.0/psr-simple-cache-3.0.0.zip",
-                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "url": "https://mirrors.tencent.com/repository/composer/psr/simple-cache/1.0.1/psr-simple-cache-1.0.1.zip",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0.0"
+                "php": ">=5.3.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -172,7 +260,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "https://www.php-fig.org/"
+                    "homepage": "http://www.php-fig.org/"
                 }
             ],
             "description": "Common interfaces for simple caching",
@@ -184,9 +272,9 @@
                 "simple-cache"
             ],
             "support": {
-                "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
+                "source": "https://github.com/php-fig/simple-cache/tree/master"
             },
-            "time": "2021-10-29T13:26:27+00:00"
+            "time": "2017-10-23T01:57:42+00:00"
         },
         {
             "name": "topthink/think-helper",
@@ -284,7 +372,11 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "mongdch/mon-cache": 20,
+        "mongdch/mon-log": 20,
+        "mongdch/mon-util": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

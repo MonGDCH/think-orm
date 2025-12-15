@@ -1,7 +1,10 @@
 {
     "name": "mongdch/think-orm",
     "description": "封装think-orm，扩展自定义查询类及DB类，优化业务操作。",
-    "keywords": ["orm", "think"],
+    "keywords": [
+        "orm",
+        "think"
+    ],
     "homepage": "https://github.com/MonGDCH",
     "license": "MIT",
     "authors": [
@@ -14,8 +17,10 @@
     ],
     "require": {
         "php": ">=7.4.0",
-        "mongdch/mon-util": "^1.4",
-        "topthink/think-orm": "^2.0 || ^3.0"
+        "topthink/think-orm": "^2.0 || ^3.0",
+        "mongdch/mon-util": "^1.4 || dev-master",
+        "mongdch/mon-log": "^1.0 || dev-master",
+        "mongdch/mon-cache": "^1.1 || dev-master"
     },
     "autoload": {
         "psr-4": {

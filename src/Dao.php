@@ -284,7 +284,7 @@ abstract class Dao
      * @param boolean   $forceInsert    是否强制insert
      * @param  boolean  $getLastInsID   insert操作下是否返回自增ID
      * @param  Query    $query          查询对象实例
-     * @return integer  影响行数或自增iD
+     * @return integer|string  影响行数或自增iD
      */
     public function save(array $data, bool $forceInsert = false, bool $getLastInsID = false, Query $query = null)
     {

@@ -6,11 +6,12 @@ namespace mon\thinkORM;
 
 use Throwable;
 use mon\env\Config;
+use mon\log\Logger;
 use mon\thinkORM\Db;
 use Workerman\Timer;
-use think\Container;
+use MongoDB\Driver\Command;
 use Psr\Log\LoggerInterface;
-use mon\thinkORM\extend\DbManager;
+use support\cache\CacheService;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -31,19 +32,17 @@ class ORM
      * @param integer $timer    长链接轮询时间间隔
      * @return void
      */
-    public static function register(bool $longLink = false, array $config = [], ?LoggerInterface $log = null, ?CacheInterface $cache = null, int $timer = 55)
+    public static function register(bool $longLink = false, array $config = [], ?LoggerInterface $log = null, ?CacheInterface $cache = null, int $timer = 50)
     {
         // 定义配置
         $config = $config ?: Config::instance()->get('database', []);
         Db::setConfig($config);
         // 定义日志驱动
-        if (!is_null($log)) {
-            Db::setLog($log);
-        }
+        $logger = $log ?: Logger::instance()->channel();
+        Db::setLog($logger);
         // 定义缓存驱动
-        if (!is_null($cache)) {
-            Db::setCache($cache);
-        }
+        $cacher = $cache ?: CacheService::instance()->getService()->store();
+        Db::setCache($cacher);
         // 处理长链接
         if ($longLink) {
             self::heart($timer);
@@ -56,33 +55,22 @@ class ORM
      * @param integer $timer
      * @return void
      */
-    public static function heart(int $timer = 55)
+    public static function heart(int $timer = 50)
     {
-        if (class_exists(Container::class, false)) {
-            $manager_instance = Container::getInstance()->make(DbManager::class);
-        } else {
-            $reflect = new \ReflectionClass(Db::class);
-            $property = $reflect->getProperty('instance');
-            $property->setAccessible(true);
-            $manager_instance = $property->getValue();
-        }
-        Timer::add($timer, function () use ($manager_instance) {
-            $instances = [];
-            if (method_exists($manager_instance, 'getInstance')) {
-                $instances = $manager_instance->getInstance();
-            } else {
-                $reflect = new \ReflectionClass($manager_instance);
-                $property = $reflect->getProperty('instance');
-                $property->setAccessible(true);
-                $instances = $property->getValue($manager_instance);
-            }
-            /**  @var \think\db\connector\Mysql $connection */
+        Timer::add($timer, function () {
+            $instances = Db::getInstance();
             foreach ($instances as $connection) {
-                if (in_array($connection->getConfig('type'), ['mysql', 'oracle', 'sqlsrv'])) {
-                    try {
-                        $connection->query('SELECT 1');
-                    } catch (Throwable $e) {
+                try {
+                    /** @var \think\db\PDOConnection $connection */
+                    if ($connection->getConfig('type') == 'mongo') {
+                        $command = new Command(['ping' => 1]);
+                        /**  @var \think\db\connector\Mongo $connection */
+                        $connection->command($command);
+                        continue;
                     }
+                    /**  @var \think\db\connector\Mysql $connection */
+                    $connection->query('SELECT 1');
+                } catch (Throwable $e) {
                 }
             }
             // 清空内存中的日志，防止错误的配置导致爆内存

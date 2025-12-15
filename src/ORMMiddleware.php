@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace mon\thinkORM;
 
 use Closure;
-use think\Container;
 use RuntimeException;
 use mon\http\Response;
-use mon\thinkORM\extend\DbManager;
 use mon\http\interfaces\RequestInterface;
 use mon\http\interfaces\MiddlewareInterface;
 
@@ -46,22 +44,7 @@ class ORMMiddleware implements MiddlewareInterface
      */
     protected function checkTpUncommittedTransaction()
     {
-        static $property, $manager_instance;
-        if (!$property) {
-            if (class_exists(Container::class, false)) {
-                $manager_instance = Container::getInstance()->make(DbManager::class);
-            } else {
-                $reflect = new \ReflectionClass(Db::class);
-                $property = $reflect->getProperty('instance');
-                $property->setAccessible(true);
-                $manager_instance = $property->getValue();
-            }
-            $reflect = new \ReflectionClass($manager_instance);
-            $property = $reflect->getProperty('instance');
-            $property->setAccessible(true);
-        }
-
-        $instances = $property->getValue($manager_instance);
+        $instances = Db::getInstance();
         /** @var \think\db\connector\Mysql $connection */
         foreach ($instances as $connection) {
             if (method_exists($connection, 'getPdo')) {
