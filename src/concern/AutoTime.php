@@ -34,11 +34,11 @@ trait AutoTime
     protected $updateTime = 'update_time';
 
     /**
-     * 自动写入时间戳格式，空则直接写入时间戳
+     * 自动写入时间格式，空则写入时间戳
      *
      * @var string
      */
-    protected $autoTimeFormat = '';
+    protected $autoTimeFormat = 'Y-m-d H:i:s';
 
     /**
      * 是否需要自动写入时间字段
@@ -79,7 +79,7 @@ trait AutoTime
     /**
      * 获取时间字段值
      *
-     * @param  mixed   $value
+     * @param  mixed   $value   时间戳
      * @return mixed
      */
     protected function getAutoTimeValue($value = null)
