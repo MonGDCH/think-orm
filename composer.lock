@@ -96,11 +96,11 @@
         },
         {
             "name": "mongdch/mon-util",
-            "version": "1.6.5",
+            "version": "1.6.7",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.6.5/mongdch-mon-util-1.6.5.zip",
-                "reference": "397aa96c06bf1c9ff4092855d8dedfcd89e99837",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.6.7/mongdch-mon-util-1.6.7.zip",
+                "reference": "ed262d1d531521d06c1d2cbe8158b0a90fde2471",
                 "shasum": ""
             },
             "require": {
@@ -136,9 +136,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/mon-util/issues",
-                "source": "https://github.com/MonGDCH/mon-util/tree/1.6.5"
+                "source": "https://github.com/MonGDCH/mon-util/tree/1.6.7"
             },
-            "time": "2025-12-09T08:41:32+00:00"
+            "time": "2026-01-27T06:47:13+00:00"
         },
         {
             "name": "psr/container",
@@ -278,11 +278,11 @@
         },
         {
             "name": "topthink/think-helper",
-            "version": "v3.1.11",
+            "version": "v3.1.12",
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.tencent.com/repository/composer/topthink/think-helper/v3.1.11/topthink-think-helper-v3.1.11.zip",
-                "reference": "1d6ada9b9f3130046bf6922fe1bd159c8d88a33c",
+                "url": "https://mirrors.tencent.com/repository/composer/topthink/think-helper/v3.1.12/topthink-think-helper-v3.1.12.zip",
+                "reference": "fe277121112a8f1c872e169a733ca80bb11c4acb",
                 "shasum": ""
             },
             "require": {
@@ -312,9 +312,9 @@
             "description": "The ThinkPHP6 Helper Package",
             "support": {
                 "issues": "https://github.com/top-think/think-helper/issues",
-                "source": "https://github.com/top-think/think-helper/tree/v3.1.11"
+                "source": "https://github.com/top-think/think-helper/tree/v3.1.12"
             },
-            "time": "2025-04-07T06:55:59+00:00"
+            "time": "2025-12-26T09:58:29+00:00"
         },
         {
             "name": "topthink/think-orm",

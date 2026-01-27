@@ -11,7 +11,6 @@ use mon\thinkORM\Db;
 use Workerman\Timer;
 use MongoDB\Driver\Command;
 use Psr\Log\LoggerInterface;
-use support\cache\CacheService;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -41,8 +40,9 @@ class ORM
         $logger = $log ?: Logger::instance()->channel();
         Db::setLog($logger);
         // 定义缓存驱动
-        $cacher = $cache ?: CacheService::instance()->getService()->store();
-        Db::setCache($cacher);
+        if ($cache) {
+            Db::setCache($cache);
+        }
         // 处理长链接
         if ($longLink) {
             self::heart($timer);

@@ -22,21 +22,21 @@ trait AutoTime
     /**
      * 创建时间字段 false表示关闭
      *
-     * @var false|string
+     * @var string
      */
     protected $createTime = 'create_time';
 
     /**
      * 更新时间字段 false表示关闭
      *
-     * @var false|string
+     * @var string
      */
     protected $updateTime = 'update_time';
 
     /**
      * 自动写入时间格式，空则写入时间戳
      *
-     * @var string
+     * @var string|null
      */
     protected $autoTimeFormat = 'Y-m-d H:i:s';
 

@@ -22,6 +22,8 @@ use mon\thinkORM\concern\BatchUpdate;
  * @method Query name(string $name) 指定数据表（不含前缀）
  * @method Query page(int $page, int $listRows = null)  指定分页
  * @method Query where(mixed $field, string $op = null, mixed $condition = null) 查询条件
+ * @method Query whereIn(mixed $field, array $condition) 指定IN查询条件
+ * @method Query whereNotIn(mixed $field, array $condition) 指定NOT NOT IN查询条件
  * @method Query whereOr($field, $op = null, $condition = null) 指定OR查询条件
  * @method Query whereExp(string $field, string $condition, array $bind = []) 字段表达式查询
  * @method Query join(mixed $join, mixed $condition = null, string $type = 'INNER') JOIN查询
@@ -262,9 +264,9 @@ abstract class Dao
         if (!$query) {
             $query = $this->db();
         }
-        $data = $query->where($where)->select();
-        if ($data->isEmpty()) {
-            return [];
+        $data = $query->where($where)->select()->toArray();
+        if (!$data) {
+            return $data;
         }
 
         $result = [];
@@ -274,7 +276,7 @@ abstract class Dao
             }
         }
 
-        return $format ? $result : $data->toArray();
+        return $format ? $result : $data;
     }
 
     /**
