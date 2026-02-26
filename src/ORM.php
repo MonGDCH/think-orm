@@ -11,6 +11,7 @@ use mon\thinkORM\Db;
 use Workerman\Timer;
 use MongoDB\Driver\Command;
 use Psr\Log\LoggerInterface;
+use support\cache\CacheService;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -40,6 +41,7 @@ class ORM
         $logger = $log ?: Logger::instance()->channel();
         Db::setLog($logger);
         // 定义缓存驱动
+        $cache = $cache ?: (class_exists(CacheService::class) ? CacheService::instance()->getService()->store() : null);
         if ($cache) {
             Db::setCache($cache);
         }
@@ -61,15 +63,19 @@ class ORM
             $instances = Db::getInstance();
             foreach ($instances as $connection) {
                 try {
+                    $type = strtolower($connection->getConfig('type'));
+
                     /** @var \think\db\PDOConnection $connection */
-                    if ($connection->getConfig('type') == 'mongo') {
+                    if ($type == 'mongo') {
                         $command = new Command(['ping' => 1]);
                         /**  @var \think\db\connector\Mongo $connection */
                         $connection->command($command);
                         continue;
                     }
+
                     /**  @var \think\db\connector\Mysql $connection */
-                    $connection->query('SELECT 1');
+                    $sql = in_array($type, ['oracle', 'oci', 'oci8']) ? 'SELECT 1 AS ping FROM DUAL' : 'SELECT 1 AS ping';
+                    $connection->query($sql);
                 } catch (Throwable $e) {
                 }
             }

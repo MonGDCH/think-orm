@@ -104,12 +104,13 @@ class DbManager extends \think\DbManager
         }
 
         /** @var ConnectionInterface $connection */
-        $this->instance[$name] = new $class($config);
-        $this->instance[$name]->setDb($this);
+        $connection = new $class($config);
+        $connection->setDb($this);
         if ($this->cache) {
-            $this->instance[$name]->setCache($this->cache);
+            $connection->setCache($this->cache);
         }
 
+        $this->instance[$name] = $connection;
         return $this->instance[$name];
     }
 }
