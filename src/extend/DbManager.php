@@ -48,7 +48,7 @@ use think\db\ConnectionInterface;
  * @method mixed select(mixed $data = null) 查询多个记录
  * @method integer insert(array $data, boolean $replace = false, boolean $getLastInsID = false, string $sequence = null) 插入一条记录
  * @method integer insertGetId(array $data, boolean $replace = false, string $sequence = null) 插入一条记录并返回自增ID
- * @method integer insertAll(array $dataSet) 插入多条记录
+ * @method integer insertAll(array $dataSet, int $limit = 0) 插入多条记录
  * @method integer update(array $data) 更新记录
  * @method integer delete(mixed $data = null) 删除记录
  * @method boolean chunk(integer $count, callable $callback, string $column = null) 分块获取数据
