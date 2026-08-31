@@ -89,7 +89,7 @@ trait AutoAttr
      * @param  Query $query 查询对象实例
      * @return integer      影响行数
      */
-    protected function updateData(array $data, Query $query = null)
+    protected function updateData(array $data, ?Query $query = null)
     {
         // 过滤只读字段
         if (!empty($this->readonly)) {
@@ -117,7 +117,7 @@ trait AutoAttr
      * @param  Query   $query           查询对象实例
      * @return integer|string           影响行数或自增主机ID
      */
-    protected function insertData(array $data, bool $getLastInsID = false, Query $query = null)
+    protected function insertData(array $data, bool $getLastInsID = false, ?Query $query = null)
     {
         // 自动完成
         $insertData = array_merge($this->autoCompleteData($this->insert, $data), $this->getAutoTimeData(true));

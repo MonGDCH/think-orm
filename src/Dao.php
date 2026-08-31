@@ -57,7 +57,7 @@ use mon\thinkORM\concern\BatchUpdate;
  * @method mixed select(mixed $data = null) 查询多个记录
  * @method integer insert(array $data, boolean $replace = false, boolean $getLastInsID = false, string $sequence = null) 插入一条记录
  * @method integer insertGetId(array $data, boolean $replace = false, string $sequence = null) 插入一条记录并返回自增ID
- * @method integer insertAll(array $dataSet, int $limit = 0) 插入多条记录
+ * @method integer insertAll(array $dataSet) 插入多条记录
  * @method integer update(array $data) 更新记录
  * @method integer delete(mixed $data = null) 删除记录
  * @method boolean chunk(integer $count, callable $callback, string $column = null) 分块获取数据
@@ -235,7 +235,7 @@ abstract class Dao
      * @param  boolean  $format 是否加工处理数据
      * @return array
      */
-    public function get(bool $format = false, array $where = [], Query $query = null): array
+    public function get(bool $format = false, array $where = [], ?Query $query = null): array
     {
         // 获取查询对象实例
         if (!$query) {
@@ -258,7 +258,7 @@ abstract class Dao
      * @param  Query    $query  查询对象实例
      * @return array
      */
-    public function all(bool $format = false, array $where = [], Query $query = null): array
+    public function all(bool $format = false, array $where = [], ?Query $query = null): array
     {
         // 获取查询对象实例
         if (!$query) {
@@ -288,7 +288,7 @@ abstract class Dao
      * @param  Query    $query          查询对象实例
      * @return integer|string  影响行数或自增iD
      */
-    public function save(array $data, bool $forceInsert = false, bool $getLastInsID = false, Query $query = null)
+    public function save(array $data, bool $forceInsert = false, bool $getLastInsID = false, ?Query $query = null)
     {
         // 过滤允许操作的字段
         if (!empty($this->allow)) {
@@ -322,7 +322,7 @@ abstract class Dao
      * @param mixed     $query  查询对象实例
      * @return integer 影响行数
      */
-    public function saveAll(array $data, int $limit = 0, Query $query = null): int
+    public function saveAll(array $data, int $limit = 0, ?Query $query = null): int
     {
         $autoTimeData = $this->getAutoTimeData(true);
         foreach ($data as $k => $item) {
