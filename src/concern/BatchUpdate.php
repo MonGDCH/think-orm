@@ -21,10 +21,11 @@ trait BatchUpdate
      * @param array $updateData 待更新的数据（二维数组，每个元素包含id和要更新的字段）
      * @param string $key 主键字段名
      * @param integer $batchSize 每批处理的数量
+     * @param string $where 额外WHERE条件，默认为空
      * @param string $table 表名，默认使用当前表名
      * @return integer 成功更新的总记录数
      */
-    public function batchUpdate(array $updateData, string $key = 'id', int $batchSize = 500, string $table = ''): int
+    public function batchUpdate(array $updateData, string $key = 'id', int $batchSize = 500, string $where = '', string $table = ''): int
     {
         $table = $table ?: $this->getTable();
         $totalUpdated = 0;
@@ -53,6 +54,9 @@ trait BatchUpdate
             // 构建并执行SQL
             if (!empty($setClauses = $this->buildSetClauses($cases))) {
                 $sql = "UPDATE `{$table}` SET " . implode(', ', $setClauses) . " WHERE `{$key}` IN (" . implode(',', $ids) . ")";
+                if ($where) {
+                    $sql .= " AND {$where}";
+                }
                 $updated = $this->execute($sql);
 
                 $totalUpdated += $updated;
@@ -84,10 +88,11 @@ trait BatchUpdate
      * @param string $key 主键字段名
      * @param array $operators 操作符映射（如 ['score' => '+' | '-' | '*' | '/']）
      * @param int $batchSize 每批处理的数量
+     * @param string $where 额外WHERE条件，默认为空
      * @param string $table 表名，默认使用当前表名
      * @return int 成功更新的总记录数
      */
-    public function batchIncrement(array $data, array $operators = [], string $key = 'id', int $batchSize = 500, string $table = ''): int
+    public function batchIncrement(array $data, array $operators = [], string $key = 'id', int $batchSize = 500, string $where = '', string $table = ''): int
     {
         $table = $table ?: $this->getTable();
         // 设置默认操作符（默认为加法）
@@ -128,6 +133,9 @@ trait BatchUpdate
             // 执行批量更新
             if (!empty($setClauses = $this->buildSetClauses($cases))) {
                 $sql = "UPDATE `{$table}` SET " . implode(', ', $setClauses) . " WHERE `{$key}` IN (" . implode(',', $ids) . ")";
+                if ($where) {
+                    $sql .= " AND {$where}";
+                }
                 $updated = $this->execute($sql);
 
                 $totalUpdated += $updated;

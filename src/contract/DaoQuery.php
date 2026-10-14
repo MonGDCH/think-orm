@@ -17,7 +17,7 @@ interface DaoQuery
     /**
      * 指定Dao对象
      *
-     * @param Dao $data Dao对象实例
+     * @param Dao $dao Dao对象实例
      * @return DaoQuery 当前实例自身
      */
     public function dao(Dao $dao): DaoQuery;

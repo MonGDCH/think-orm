@@ -26,7 +26,7 @@ class Query extends \think\db\Query implements DaoQuery
     /**
      * 指定Dao对象
      *
-     * @param Dao $data Dao对象实例
+     * @param Dao $dao Dao对象实例
      * @return Query 当前实例自身
      */
     public function dao(Dao $dao): Query
