@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-        "php": ">=7.4.0",
-        "topthink/think-orm": "^2.0 || ^3.0",
+        "php": ">=8.0",
+        "topthink/think-orm": "^3.0",
         "mongdch/mon-util": "^1.4 || dev-master",
         "mongdch/mon-log": "^1.0 || dev-master",
         "mongdch/mon-cache": "^1.1 || dev-master"

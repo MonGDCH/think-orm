@@ -35,7 +35,8 @@ trait BatchUpdate
 
             // 构建CASE WHEN子句
             foreach ($batch as $item) {
-                $id = $item[$key];
+                $id = $item[$key] ?? null;
+                $this->validateId($id, $key);
                 $ids[] = $id;
 
                 foreach ($item as $field => $value) {
@@ -95,19 +96,17 @@ trait BatchUpdate
     public function batchIncrement(array $data, array $operators = [], string $key = 'id', int $batchSize = 500, string $where = '', string $table = ''): int
     {
         $table = $table ?: $this->getTable();
-        // 设置默认操作符（默认为加法）
+        // 设置操作符（默认为加法，按字段名映射）
         $defaultOperators = ['+', '-', '*', '/'];
-        $operators = array_merge(['+' => '+'], $operators); // 确保至少有默认操作符
-
         $totalUpdated = 0;
-
         foreach (array_chunk($data, $batchSize) as $batch) {
             $cases = [];
             $ids = [];
 
             // 构建增量更新的CASE WHEN子句
             foreach ($batch as $item) {
-                $id = $item[$key];
+                $id = $item[$key] ?? null;
+                $this->validateId($id, $key);
                 $ids[] = $id;
 
                 foreach ($item as $field => $value) {
@@ -166,18 +165,55 @@ trait BatchUpdate
      * 安全转义值
      *
      * @param mixed $value
-     * @return mixed
+     * @throws InvalidArgumentException 不支持的数据类型
+     * @return string
      */
-    protected function escapeValue($value)
+    protected function escapeValue($value): string
     {
         if (is_null($value)) {
             return 'NULL';
-        } elseif (is_string($value)) {
-            return Db::getPdo()->quote($value);
-        } elseif (is_bool($value)) {
+        }
+        if (is_bool($value)) {
             return $value ? '1' : '0';
         }
+        if (is_int($value) || is_float($value)) {
+            return (string) $value;
+        }
+        if (is_string($value)) {
+            return $this->getQuotePdo()->quote($value);
+        }
 
-        return $value;
+        throw new InvalidArgumentException('批量更新不支持的数据类型: ' . gettype($value));
+    }
+
+    /**
+     * 校验主键值，防止SQL注入（仅允许整数及整数字符串）
+     *
+     * @param mixed  $id   主键值
+     * @param string $key  主键字段名
+     * @throws InvalidArgumentException 非法主键值
+     * @return void
+     */
+    protected function validateId($id, string $key): void
+    {
+        if (!is_int($id) && !(is_string($id) && preg_match('/^-?\d+$/', $id))) {
+            throw new InvalidArgumentException("批量更新的主键[{$key}]必须为整数");
+        }
+    }
+
+    /**
+     * 获取用于转义的PDO对象（遵循Dao绑定的连接配置）
+     *
+     * @return \PDO
+     */
+    protected function getQuotePdo(): \PDO
+    {
+        if (method_exists($this, 'getConnection') && $this->getConnection()) {
+            /** @var \think\db\PDOConnection $connection */
+            $connection = Db::connect($this->getConnection());
+            return $connection->getPdo();
+        }
+
+        return Db::getPdo();
     }
 }
