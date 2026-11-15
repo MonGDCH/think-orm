@@ -46,9 +46,9 @@ use think\db\ConnectionInterface;
  * @method array column(string $field, string $key = '') 获取某个列的值
  * @method mixed find(mixed $data = null) 查询单个记录
  * @method mixed select(mixed $data = null) 查询多个记录
- * @method integer insert(array $data, boolean $replace = false, boolean $getLastInsID = false, string $sequence = null) 插入一条记录
- * @method integer insertGetId(array $data, boolean $replace = false, string $sequence = null) 插入一条记录并返回自增ID
- * @method integer insertAll(array $dataSet, int $limit = 0) 插入多条记录
+ * @method integer insert(array $data = [], boolean $getLastInsID = false) 插入一条记录
+ * @method integer insertGetId(array $data) 插入一条记录并返回自增ID
+ * @method integer insertAll(array $dataSet = [], int $limit = 0) 插入多条记录
  * @method integer update(array $data) 更新记录
  * @method integer delete(mixed $data = null) 删除记录
  * @method boolean chunk(integer $count, callable $callback, string $column = null) 分块获取数据
@@ -82,6 +82,20 @@ use think\db\ConnectionInterface;
 class DbManager extends \think\DbManager
 {
     /**
+     * 动态配置连接的最大数量，超出后按建立顺序淘汰，防止常驻进程连接无限增长
+     *
+     * @var integer
+     */
+    protected $maxConfigConnect = 32;
+
+    /**
+     * 动态配置连接标识，按建立顺序保存
+     *
+     * @var array
+     */
+    protected $configConnectKeys = [];
+
+    /**
      * 通过动态配置数组链接数据库
      *
      * @param array $config     配置信息
@@ -94,6 +108,11 @@ class DbManager extends \think\DbManager
         $name = is_null($name) ? md5(serialize($config)) : $name;
         if (!$force && isset($this->instance[$name])) {
             return $this->instance[$name];
+        }
+
+        // 强制重连时关闭旧连接，避免残留失效连接占用文件句柄
+        if (isset($this->instance[$name])) {
+            $this->closeInstance($name);
         }
 
         $type = !empty($config['type']) ? $config['type'] : 'mysql';
@@ -111,6 +130,31 @@ class DbManager extends \think\DbManager
         }
 
         $this->instance[$name] = $connection;
+        $this->configConnectKeys[$name] = true;
+        // 超限时淘汰最早建立的动态连接
+        while (count($this->configConnectKeys) > $this->maxConfigConnect) {
+            $oldest = array_key_first($this->configConnectKeys);
+            if ($oldest === $name) {
+                break;
+            }
+            $this->closeInstance($oldest);
+        }
+
         return $this->instance[$name];
+    }
+
+    /**
+     * 关闭并移除指定连接
+     *
+     * @param string $name 连接标识
+     * @return void
+     */
+    protected function closeInstance(string $name): void
+    {
+        if (isset($this->instance[$name]) && method_exists($this->instance[$name], 'close')) {
+            $this->instance[$name]->close();
+        }
+
+        unset($this->instance[$name], $this->configConnectKeys[$name]);
     }
 }

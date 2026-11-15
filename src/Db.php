@@ -45,9 +45,9 @@ use think\Facade;
  * @method static array column(string $field, string $key = '') 获取某个列的值
  * @method static mixed find(mixed $data = null) 查询单个记录
  * @method static mixed select(mixed $data = null) 查询多个记录
- * @method static integer insert(array $data, boolean $replace = false, boolean $getLastInsID = false, string $sequence = null) 插入一条记录
- * @method static integer insertGetId(array $data, boolean $replace = false, string $sequence = null) 插入一条记录并返回自增ID
- * @method static integer insertAll(array $dataSet) 插入多条记录
+ * @method static integer insert(array $data = [], boolean $getLastInsID = false) 插入一条记录
+ * @method static integer insertGetId(array $data) 插入一条记录并返回自增ID
+ * @method static integer insertAll(array $dataSet = [], integer $limit = 0) 插入多条记录
  * @method static integer update(array $data) 更新记录
  * @method static integer delete(mixed $data = null) 删除记录
  * @method static boolean chunk(integer $count, callable $callback, string $column = null) 分块获取数据

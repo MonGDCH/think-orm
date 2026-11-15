@@ -22,6 +22,11 @@
         "mongdch/mon-log": "^1.0 || dev-master",
         "mongdch/mon-cache": "^1.1 || dev-master"
     },
+    "suggest": {
+        "workerman/workerman": "常驻进程下注册数据库长链接心跳（ORM::heart）时需要",
+        "mongodb/mongodb": "使用MongoDB连接时需要",
+        "mongdch/mon-env": "使用 ORM::register 自动读取config/database.php配置时需要"
+    },
     "autoload": {
         "psr-4": {
             "mon\\thinkORM\\": "src"

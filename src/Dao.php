@@ -55,9 +55,9 @@ use mon\thinkORM\concern\BatchUpdate;
  * @method array column(string $field, string $key = '') 获取某个列的值
  * @method mixed find(mixed $data = null) 查询单个记录
  * @method mixed select(mixed $data = null) 查询多个记录
- * @method integer insert(array $data, boolean $replace = false, boolean $getLastInsID = false, string $sequence = null) 插入一条记录
- * @method integer insertGetId(array $data, boolean $replace = false, string $sequence = null) 插入一条记录并返回自增ID
- * @method integer insertAll(array $dataSet) 插入多条记录
+ * @method integer insert(array $data = [], boolean $getLastInsID = false) 插入一条记录
+ * @method integer insertGetId(array $data) 插入一条记录并返回自增ID
+ * @method integer insertAll(array $dataSet = [], integer $limit = 0) 插入多条记录
  * @method integer update(array $data) 更新记录
  * @method integer delete(mixed $data = null) 删除记录
  * @method boolean chunk(integer $count, callable $callback, string $column = null) 分块获取数据
@@ -290,28 +290,32 @@ abstract class Dao
      */
     public function save(array $data, bool $forceInsert = false, bool $getLastInsID = false, ?Query $query = null)
     {
-        // 过滤允许操作的字段
-        if (!empty($this->allow)) {
-            $allowData = [];
-            foreach ($this->allow as $field) {
-                if (array_key_exists($field, $data)) {
-                    $allowData[$field] = $data[$field];
+        try {
+            // 过滤允许操作的字段
+            if (!empty($this->allow)) {
+                $allowData = [];
+                foreach ($this->allow as $field) {
+                    if (array_key_exists($field, $data)) {
+                        $allowData[$field] = $data[$field];
+                    }
                 }
+                // 重置操作数据
+                $data = $allowData;
             }
-            // 重置操作数据
-            $data = $allowData;
+            // 获取查询对象实例
+            if (!$query) {
+                $query = $this->db();
+            }
+
+            if ($forceInsert) {
+                return $this->insertData($data, $getLastInsID, $query);
+            }
+
+            return $query->isUpdate() ? $this->updateData($data, $query) : $this->insertData($data, $getLastInsID, $query);
+        } finally {
+            // 常驻进程下Dao为单例，必须保证异常路径也能重置允许字段，避免状态残留到后续请求
             $this->allow = [];
         }
-        // 获取查询对象实例
-        if (!$query) {
-            $query = $this->db();
-        }
-
-        if ($forceInsert) {
-            return $this->insertData($data, $getLastInsID, $query);
-        }
-
-        return $query->isUpdate() ? $this->updateData($data, $query) : $this->insertData($data, $getLastInsID, $query);
     }
 
     /**
@@ -324,29 +328,33 @@ abstract class Dao
      */
     public function saveAll(array $data, int $limit = 0, ?Query $query = null): int
     {
-        $autoTimeData = $this->getAutoTimeData(true);
-        foreach ($data as $k => $item) {
-            // 过滤允许操作的字段
-            if (!empty($this->allow)) {
-                $allowData = [];
-                foreach ($this->allow as $field) {
-                    if (array_key_exists($field, $item)) {
-                        $allowData[$field] = $item[$field];
+        try {
+            $autoTimeData = $this->getAutoTimeData(true);
+            foreach ($data as $k => $item) {
+                // 过滤允许操作的字段
+                if (!empty($this->allow)) {
+                    $allowData = [];
+                    foreach ($this->allow as $field) {
+                        if (array_key_exists($field, $item)) {
+                            $allowData[$field] = $item[$field];
+                        }
                     }
+                    // 重置操作数据
+                    $item = $allowData;
                 }
-                // 重置操作数据
-                $item = $allowData;
+
+                $data[$k] = array_merge($this->autoCompleteData($this->insert, $item), $autoTimeData);
+            }
+            // 获取查询对象实例
+            if (!$query) {
+                $query = $this->db();
             }
 
-            $data[$k] = array_merge($this->autoCompleteData($this->insert, $item), $autoTimeData);
+            return $query->insertAll($data, $limit);
+        } finally {
+            // 常驻进程下Dao为单例，必须保证异常路径也能重置允许字段，避免状态残留到后续请求
+            $this->allow = [];
         }
-        $this->allow = [];
-        // 获取查询对象实例
-        if (!$query) {
-            $query = $this->db();
-        }
-
-        return $query->insertAll($data, $limit);
     }
 
     /**

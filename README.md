@@ -258,7 +258,7 @@ $dao->batchIncrement([
 // batchIncrement(array $data, array $operators = [], string $key = 'id', int $batchSize = 500, string $where = '', string $table = '')
 ```
 
-> 安全提示：`$where` 参数为原生 SQL 拼接（如 `'status = 1'`），请勿传入用户输入；主键值必须为服务端可信数据（本扩展会对其做类型校验）。字段值已经过 `PDO::quote` 转义处理。
+> 安全提示：`$where` 参数为原生 SQL 拼接（如 `'status = 1'`），请勿传入用户输入；表名、主键名和字段名会做白名单校验（仅允许字母、数字、下划线），不合法会抛出 `InvalidArgumentException`；字段值统一使用参数绑定写入，主键值必须为整数或整数字符串。批量更新会过滤 Dao 的只读字段，并按 `$autoWriteTimestamp` 配置补全更新时间。
 
 ## 验证器
 
