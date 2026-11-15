@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace mon\thinkORM;
 
 use Closure;
+use Throwable;
 use RuntimeException;
 use mon\http\Response;
 use mon\http\interfaces\RequestInterface;
@@ -41,14 +42,19 @@ class ORMMiddleware implements MiddlewareInterface
     /**
      * 检查think-orm是否有未提交的事务
      *
-     * @throws RuntimeException 存在未提交的事务（已回滚）
+     * 注意：单个连接回滚失败（常见于连接已断开）不会中断其它连接的清理，
+     * 也不会掩盖本次请求的原始异常
+     *
+     * @throws RuntimeException 存在未提交的事务（已尝试回滚），或回滚失败
      * @return void
      */
     protected function checkTpUncommittedTransaction(): void
     {
-        $instances = Db::getInstance();
+        $rolledBack = false;
+        $failures = [];
+
         /** @var \think\db\connector\Mysql $connection */
-        foreach ($instances as $connection) {
+        foreach (Db::getInstance() as $name => $connection) {
             if (!method_exists($connection, 'getPdo')) {
                 continue;
             }
@@ -58,14 +64,32 @@ class ORMMiddleware implements MiddlewareInterface
                 continue;
             }
 
-            // 逐个回滚，兼容嵌套事务（只回滚一次会残留外层事务）
-            $times = 0;
-            while ($pdo instanceof \PDO && $pdo->inTransaction() && $times < 100) {
-                $connection->rollback();
-                $pdo = $connection->getPdo();
-                $times++;
+            try {
+                // 逐个回滚，兼容嵌套事务（只回滚一次会残留外层事务）
+                $times = 0;
+                while ($pdo instanceof \PDO && $pdo->inTransaction() && $times < 100) {
+                    $connection->rollback();
+                    $pdo = $connection->getPdo();
+                    $times++;
+                }
+                $rolledBack = true;
+            } catch (Throwable $e) {
+                // 记录失败并关闭失效连接（事务计数随之归零），继续清理其它连接
+                $failures[] = "database.[{$name}] " . get_class($e) . ': ' . $e->getMessage();
+                try {
+                    if (method_exists($connection, 'close')) {
+                        $connection->close();
+                    }
+                } catch (Throwable $ex) {
+                }
             }
+        }
 
+        if (!empty($failures)) {
+            throw new RuntimeException('Uncommitted transaction rollback failed: ' . implode('; ', $failures));
+        }
+
+        if ($rolledBack) {
             throw new RuntimeException('Uncommitted transaction found and try to rollback');
         }
     }
