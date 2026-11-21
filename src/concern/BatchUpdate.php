@@ -32,7 +32,6 @@ trait BatchUpdate
     {
         return $this->batchWrite($updateData, [], $key, $batchSize, $where, $table);
     }
-
     /**
      * 批量增量更新数据（默认基于ID）
      * 
@@ -41,7 +40,7 @@ trait BatchUpdate
      *     ['id' => 1, 'score' => 10],   // score += 10
      *     ['id' => 2, 'score' => 5],    // score += 5
      *     ['id' => 3, 'level' => 2],    // level += 2
-     *     ['id' => 4, 'stock' => -1],   // stock -= 1
+     *     ['id' => 4, 'stock' => 1],    // stock -= 1
      * ];
      * // 指定操作符（可选，默认为+）
      * $operators = [
@@ -62,22 +61,24 @@ trait BatchUpdate
      */
     public function batchIncrement(array $data, array $operators = [], string $key = 'id', int $batchSize = 500, string $where = '', string $table = ''): int
     {
-        return $this->batchWrite($data, $operators, $key, $batchSize, $where, $table);
+        // 未指定操作符的字段默认为'+'增量，与文档约定一致
+        return $this->batchWrite($data, $operators, $key, $batchSize, $where, $table, '+');
     }
 
     /**
      * 批量写入实现
      *
      * @param array $data       待处理数据
-     * @param array $operators  增量操作符映射，为空表示直接赋值
+     * @param array $operators  增量操作符映射，显式指定优先于默认操作符
      * @param string $key       主键字段名
      * @param integer $batchSize 每批处理数量
      * @param string $where     额外WHERE条件
      * @param string $table     表名
+     * @param string $defaultOperator 默认操作符，空字符串表示直接赋值，batchIncrement传'+'表示缺省增量
      * @throws InvalidArgumentException
      * @return integer 成功更新的总记录数
      */
-    protected function batchWrite(array $data, array $operators, string $key, int $batchSize, string $where, string $table): int
+    protected function batchWrite(array $data, array $operators, string $key, int $batchSize, string $where, string $table, string $defaultOperator = ''): int
     {
         if (empty($data)) {
             return 0;
@@ -102,24 +103,24 @@ trait BatchUpdate
                 $this->validateId($id, $key);
                 $ids[] = $id;
 
-                foreach ($this->prepareBatchData($item, $key) as $field => $value) {
+                foreach ($item as $field => $value) {
                     if ($field === $key) {
                         continue;
                     }
                     $field = $this->parseBatchIdentifier((string) $field, '操作字段');
                     $this->validateBatchValue($value, $field);
                     // 构建赋值表达式，值统一使用参数绑定，避免SQL注入
+                    // 显式操作符优先于默认操作符；默认操作符为空字符串时表示直接赋值
                     $expression = '?';
-                    if (!empty($operators)) {
-                        $operator = $operators[$field] ?? '+';
+                    $operator = $operators[$field] ?? $defaultOperator;
+                    if ($operator !== '') {
                         if (!in_array($operator, $allowOperators, true)) {
                             throw new InvalidArgumentException("无效的操作符: {$operator}");
                         }
                         $expression = "`{$field}` {$operator} ?";
                     }
-                    $cases[$field][] = "WHEN {$keyQuoted} = ? THEN {$expression}";
-                    $binds[] = $id;
-                    $binds[] = $value;
+                    // 按字段分组暂存，组装SET子句时同步收集绑定，保证绑定顺序与占位符顺序一致
+                    $cases[$field][] = ['id' => $id, 'value' => $value, 'expression' => $expression];
                 }
             }
 
@@ -128,7 +129,13 @@ trait BatchUpdate
             }
 
             $setClauses = [];
-            foreach ($cases as $field => $whenClauses) {
+            foreach ($cases as $field => $rows) {
+                $whenClauses = [];
+                foreach ($rows as $row) {
+                    $whenClauses[] = "WHEN {$keyQuoted} = ? THEN {$row['expression']}";
+                    $binds[] = $row['id'];
+                    $binds[] = $row['value'];
+                }
                 $setClauses[] = "`{$field}` = CASE " . implode(' ', $whenClauses) . " ELSE `{$field}` END";
             }
 
@@ -144,30 +151,6 @@ trait BatchUpdate
         }
 
         return $totalUpdated;
-    }
-
-    /**
-     * 整理单条待更新数据：过滤只读字段、补全自动时间戳
-     *
-     * @param array $item 单条数据
-     * @param string $key 主键字段名
-     * @return array
-     */
-    protected function prepareBatchData(array $item, string $key): array
-    {
-        // 过滤只读字段，避免批量更新绕过 Dao 的只读保护
-        if (method_exists($this, 'getReadonly')) {
-            foreach ($this->getReadonly() as $field) {
-                unset($item[$field]);
-            }
-        }
-
-        // 补全自动写入的时间戳字段，保持与 save 更新行为一致
-        if (method_exists($this, 'getAutoTimeData')) {
-            $item = array_merge($item, $this->getAutoTimeData(false));
-        }
-
-        return $item;
     }
 
     /**
