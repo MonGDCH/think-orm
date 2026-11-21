@@ -8,16 +8,11 @@
     "packages": [
         {
             "name": "mongdch/mon-cache",
-            "version": "1.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MonGDCH/mon-cache.git",
-                "reference": "bce71fe8dffc7cd40b56fa9e6964b11981f35918"
-            },
+            "version": "1.1.4",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-cache/zipball/bce71fe8dffc7cd40b56fa9e6964b11981f35918",
-                "reference": "bce71fe8dffc7cd40b56fa9e6964b11981f35918",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-cache/1.1.4/mongdch-mon-cache-1.1.4.zip",
+                "reference": "6828d042b042fbd90b4aa7ad5a7af8b0c7613705",
                 "shasum": ""
             },
             "require": {
@@ -33,7 +28,6 @@
                     "mon\\cache\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -53,27 +47,22 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/mon-cache/issues",
-                "source": "https://github.com/MonGDCH/mon-cache/tree/1.1.3"
+                "source": "https://github.com/MonGDCH/mon-cache/tree/1.1.4"
             },
-            "time": "2026-11-07T09:24:04+00:00"
+            "time": "2026-11-15T15:05:52+00:00"
         },
         {
             "name": "mongdch/mon-log",
-            "version": "1.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MonGDCH/mon-log.git",
-                "reference": "65bedc2a0e8c5e051e59616229bb1774a2d8d067"
-            },
+            "version": "1.1.2",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-log/zipball/65bedc2a0e8c5e051e59616229bb1774a2d8d067",
-                "reference": "65bedc2a0e8c5e051e59616229bb1774a2d8d067",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-log/1.1.2/mongdch-mon-log-1.1.2.zip",
+                "reference": "ccb3812a1e12d207320c93b57da3a953cca8b8ea",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.0",
-                "psr/log": "^1.1"
+                "php": ">=8.0",
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "type": "library",
             "autoload": {
@@ -81,7 +70,6 @@
                     "mon\\log\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -102,21 +90,16 @@
             ],
             "support": {
                 "issues": "https://github.com/MonGDCH/mon-log/issues",
-                "source": "https://github.com/MonGDCH/mon-log/tree/1.1.1"
+                "source": "https://github.com/MonGDCH/mon-log/tree/1.1.2"
             },
-            "time": "2026-11-07T08:06:59+00:00"
+            "time": "2026-11-16T01:39:19+00:00"
         },
         {
             "name": "mongdch/mon-util",
             "version": "1.7.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/MonGDCH/mon-util.git",
-                "reference": "030eb40e17470e68ef9a7b2039680050b309c8d8"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MonGDCH/mon-util/zipball/030eb40e17470e68ef9a7b2039680050b309c8d8",
+                "url": "https://mirrors.tencent.com/repository/composer/mongdch/mon-util/1.7.1/mongdch-mon-util-1.7.1.zip",
                 "reference": "030eb40e17470e68ef9a7b2039680050b309c8d8",
                 "shasum": ""
             },
@@ -133,7 +116,6 @@
                     "mon\\util\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
@@ -161,14 +143,9 @@
         {
             "name": "psr/container",
             "version": "2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/container.git",
-                "reference": "c71ecc56dfe541dbd90c5360474fbc405f8d5963"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/c71ecc56dfe541dbd90c5360474fbc405f8d5963",
+                "url": "https://mirrors.tencent.com/repository/composer/psr/container/2.0.2/psr-container-2.0.2.zip",
                 "reference": "c71ecc56dfe541dbd90c5360474fbc405f8d5963",
                 "shasum": ""
             },
@@ -186,7 +163,6 @@
                     "Psr\\Container\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -213,33 +189,27 @@
         },
         {
             "name": "psr/log",
-            "version": "1.1.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/log.git",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11"
-            },
+            "version": "3.0.2",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/d49695b909c3b7628b6289db5479a1c204601f11",
-                "reference": "d49695b909c3b7628b6289db5479a1c204601f11",
+                "url": "https://mirrors.tencent.com/repository/composer/psr/log/3.0.2/psr-log-3.0.2.zip",
+                "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "3.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Psr\\Log\\": "Psr/Log/"
+                    "Psr\\Log\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -257,21 +227,16 @@
                 "psr-3"
             ],
             "support": {
-                "source": "https://github.com/php-fig/log/tree/1.1.4"
+                "source": "https://github.com/php-fig/log/tree/3.0.2"
             },
-            "time": "2021-05-03T11:20:27+00:00"
+            "time": "2024-09-11T13:17:53+00:00"
         },
         {
             "name": "psr/simple-cache",
             "version": "3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/simple-cache.git",
-                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "url": "https://mirrors.tencent.com/repository/composer/psr/simple-cache/3.0.0/psr-simple-cache-3.0.0.zip",
                 "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865",
                 "shasum": ""
             },
@@ -289,7 +254,6 @@
                     "Psr\\SimpleCache\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -315,14 +279,9 @@
         {
             "name": "topthink/think-helper",
             "version": "v3.1.12",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-helper.git",
-                "reference": "fe277121112a8f1c872e169a733ca80bb11c4acb"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-helper/zipball/fe277121112a8f1c872e169a733ca80bb11c4acb",
+                "url": "https://mirrors.tencent.com/repository/composer/topthink/think-helper/v3.1.12/topthink-think-helper-v3.1.12.zip",
                 "reference": "fe277121112a8f1c872e169a733ca80bb11c4acb",
                 "shasum": ""
             },
@@ -341,7 +300,6 @@
                     "think\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
@@ -361,14 +319,9 @@
         {
             "name": "topthink/think-orm",
             "version": "v3.0.34",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-orm.git",
-                "reference": "715e55da149fe32a12d68ef10e5b00e70bd3dbec"
-            },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-orm/zipball/715e55da149fe32a12d68ef10e5b00e70bd3dbec",
+                "url": "https://mirrors.tencent.com/repository/composer/topthink/think-orm/v3.0.34/topthink-think-orm-v3.0.34.zip",
                 "reference": "715e55da149fe32a12d68ef10e5b00e70bd3dbec",
                 "shasum": ""
             },
@@ -395,7 +348,6 @@
                     "think\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
@@ -421,15 +373,15 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "mongdch/mon-util": 20,
+        "mongdch/mon-cache": 20,
         "mongdch/mon-log": 20,
-        "mongdch/mon-cache": 20
+        "mongdch/mon-util": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
