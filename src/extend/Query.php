@@ -49,13 +49,15 @@ class Query extends \think\db\Query implements DaoQuery
      * 允许操作的字段，存在Dao对象时有效
      *
      * @param array $field
+     * @throws RuntimeException 未绑定Dao对象时抛出，禁止静默跳过字段过滤
      * @return Query
      */
     public function allowField(array $field): Query
     {
-        if ($this->getDao()) {
-            $this->getDao()->allowField($field);
+        if (!$this->getDao()) {
+            throw new RuntimeException('查询对象未绑定Dao对象，allowField字段过滤无法生效');
         }
+        $this->getDao()->allowField($field);
 
         return $this;
     }
@@ -71,6 +73,8 @@ class Query extends \think\db\Query implements DaoQuery
         if (!empty($this->options['where'])) {
             $isUpdate = true;
         } else {
+            // options['data']可能未初始化，parseUpdateData按引用传参且要求数组类型，先确保元素存在
+            $this->options['data'] ??= [];
             $isUpdate = $this->parseUpdateData($this->options['data']);
         }
 

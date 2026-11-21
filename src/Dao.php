@@ -306,6 +306,8 @@ abstract class Dao
             if (!$query) {
                 $query = $this->db();
             }
+            // 将数据写入查询对象，使isUpdate能依据主键自动判断insert或update
+            $query->data($data);
 
             if ($forceInsert) {
                 return $this->insertData($data, $getLastInsID, $query);
